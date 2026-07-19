@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm -v)",
+      "Bash(pnpm dlx *)",
+      "Bash(pnpm view *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm approve-builds *)",
+      "Bash(pnpm install *)",
+      "Bash(echo \"exit:$?\")",
+      "Bash(supabase --version)",
+      "Bash(supabase init *)",
+      "Bash(mkdir -p /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/init_test)",
+      "Bash(docker info *)",
+      "Bash(timeout 300 supabase start)",
+      "Bash(pnpm tsc *)",
+      "Bash(timeout 300 supabase status)",
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -p 54322 -U postgres -d postgres -c \"\\\\dt public.*\")",
+      "Bash(docker exec *)",
+      "Bash(cp /tmp/schema_check.ts ./schema_check.ts)",
+      "Bash(docker exec -i supabase_db_twicetek_solution psql -U postgres -d postgres -c ' *)",
+      "Bash(timeout 120 supabase stop)",
+      "Bash(rm -rf /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/supabase/.branches /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/supabase/.temp)",
+      "Bash(mkdir -p /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/init_test2)",
+      "Bash(yes n *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm exec *)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm dev *)",
+      "Bash(echo \"started with pid $!\")",
+      "Bash(echo \"exit: $?\")",
+      "Read(//tmp/**)",
+      "Bash(grep -n \"^      organizations: {\" -A 60 /tmp/generated.types.ts | head -70)",
+      "Read(//private/tmp/**)",
+      "Bash(grep -n \"get_or_create_draft_organization\" -A 15 /tmp/generated.types.ts)",
+      "Bash(tail -n +3 /tmp/generated.types.ts > /tmp/generated.types.clean.ts *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(tail -80 /tmp/nextdev.log 2>&1)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
+    ]
+  }
+}
