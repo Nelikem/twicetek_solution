@@ -208,7 +208,7 @@ export function Step4Form() {
                   </motion.span>
                 )}
               </div>
-              <Button type="button" disabled title="Steps 5-6 are coming in a future release">
+              <Button type="button" onClick={() => router.push("/onboarding/step-5")}>
                 Continue
               </Button>
             </motion.div>

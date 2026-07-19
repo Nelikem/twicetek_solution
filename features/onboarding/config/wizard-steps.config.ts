@@ -54,7 +54,7 @@ export const WIZARD_STEPS: readonly WizardStepConfig[] = [
     title: "Subscription",
     description: "Choose a plan and billing method.",
     path: "/onboarding/step-5",
-    status: "locked",
+    status: "active",
   },
   {
     id: 6,
@@ -62,6 +62,6 @@ export const WIZARD_STEPS: readonly WizardStepConfig[] = [
     title: "Review",
     description: "Confirm everything and create your organization.",
     path: "/onboarding/step-6",
-    status: "locked",
+    status: "active",
   },
 ] as const

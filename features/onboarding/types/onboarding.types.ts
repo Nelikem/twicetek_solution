@@ -2,6 +2,7 @@ import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/
 import type { BusinessDraftValues } from "@/features/onboarding/schemas/business.schema"
 import type { BranchDraftValues } from "@/features/onboarding/schemas/branch.schema"
 import type { AdministratorDraftValues } from "@/features/onboarding/schemas/administrator.schema"
+import type { SubscriptionDraftValues } from "@/features/onboarding/schemas/subscription.schema"
 
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error"
 
@@ -58,6 +59,16 @@ export interface Administrator extends AdministratorDraftValues {
   roleId: string | null
   status: "invited" | "active" | "suspended"
   joinedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Domain-shaped (camelCase) subscription row — at most one per organization
+ * during onboarding. */
+export interface Subscription extends SubscriptionDraftValues {
+  id: string
+  organizationId: string
+  status: "trialing" | "active" | "past_due" | "canceled" | "incomplete"
   createdAt: string
   updatedAt: string
 }

@@ -94,3 +94,15 @@ export async function updateOrganizationInfo(
   if (error) throw error
   return toDomain(data)
 }
+
+/**
+ * Idempotent: flips the organization (and its draft businesses/branches) to
+ * 'active' via the complete_onboarding RPC -- the only path that can do this,
+ * since organizations_update's RLS WITH CHECK only ever permits status to
+ * remain 'draft' for a direct client write.
+ */
+export async function completeOnboarding(supabase: TypedClient, organizationId: string): Promise<OrganizationDraft> {
+  const { data, error } = await supabase.rpc("complete_onboarding", { org_id: organizationId })
+  if (error) throw error
+  return toDomain(data)
+}

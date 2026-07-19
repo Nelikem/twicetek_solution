@@ -15,11 +15,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -1297,6 +1292,42 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      complete_onboarding: {
+        Args: { org_id: string }
+        Returns: {
+          address: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          fiscal_year_start_month: number | null
+          id: string
+          industry: string | null
+          legal_business_name: string | null
+          logo_path: string | null
+          onboarding_completed_steps: Json
+          onboarding_current_step: number
+          onboarding_last_saved_at: string | null
+          org_email: string | null
+          owner_user_id: string
+          phone: string | null
+          registration_number: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["organization_status"]
+          tax_id: string | null
+          timezone: string | null
+          updated_at: string
+          website: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "organizations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       ensure_owner_membership: {
         Args: { org_id: string }
         Returns: {
@@ -1516,3 +1547,4 @@ export const Constants = {
     },
   },
 } as const
+
