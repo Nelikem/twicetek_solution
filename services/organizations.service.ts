@@ -79,6 +79,26 @@ export async function getDraftById(
   return data ? toDomain(data) : null
 }
 
+/**
+ * For post-onboarding pages (e.g. the dashboard) that shouldn't depend on the
+ * onboarding wizard's client-side Zustand draftId -- that store is scoped to the
+ * onboarding session and persisted to localStorage, which is the wrong source of
+ * truth for a permanent page reachable from any browser/device. A user has at
+ * most one organization today, so this is a direct owner lookup, not a list.
+ */
+export async function getOrganizationByOwner(
+  supabase: TypedClient,
+  ownerUserId: string
+): Promise<OrganizationDraft | null> {
+  const { data, error } = await supabase
+    .from("organizations")
+    .select("*")
+    .eq("owner_user_id", ownerUserId)
+    .maybeSingle()
+  if (error) throw error
+  return data ? toDomain(data) : null
+}
+
 export async function updateOrganizationInfo(
   supabase: TypedClient,
   id: string,

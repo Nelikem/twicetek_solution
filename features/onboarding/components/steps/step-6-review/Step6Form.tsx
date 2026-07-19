@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { motion, useReducedMotion } from "framer-motion"
-import { Building2, CheckCircle2, Mail, MapPin, ShieldCheck, Sparkles } from "lucide-react"
+import { Building2, CheckCircle2, Mail, MapPin, ShieldCheck } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -41,6 +41,14 @@ export function Step6Form() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount; ensureDraft identity changes every render
   }, [draftId])
 
+  // Covers both a fresh "Complete Setup" click and re-visiting this step after a
+  // prior session already completed onboarding -- the query just comes back active.
+  const isComplete = organizationQuery.data?.status === "active" || completeMutation.isSuccess
+
+  useEffect(() => {
+    if (isComplete) router.push("/dashboard")
+  }, [isComplete, router])
+
   const isLoading =
     ensureDraft.isPending ||
     (!!draftId &&
@@ -76,36 +84,23 @@ export function Step6Form() {
     )
   }
 
+  // Redirecting to /dashboard (see effect above) -- render a skeleton for the one
+  // render tick before navigation commits, rather than flashing review content.
+  if (isComplete) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-40 w-full" />
+      </div>
+    )
+  }
+
   const org = organizationQuery.data
   const businesses = businessesQuery.data ?? []
   const branches = branchesQuery.data ?? []
   const administrator = administratorQuery.data
   const subscription = subscriptionQuery.data
   const plan = subscription ? SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId) : undefined
-
-  // Covers both a fresh completion and re-visiting this step after a prior
-  // session already completed onboarding -- the query just comes back active.
-  const isComplete = org?.status === "active" || completeMutation.isSuccess
-
-  if (isComplete) {
-    return (
-      <StepTransition stepKey="step-6">
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center gap-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 py-16 text-center"
-        >
-          <div className="flex size-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <Sparkles className="size-6" />
-          </div>
-          <h1 className="text-xl font-semibold tracking-tight">Setup complete!</h1>
-          <p className="max-w-sm text-sm text-muted-foreground">
-            {org?.companyName || "Your organization"} is ready to go.
-          </p>
-        </motion.div>
-      </StepTransition>
-    )
-  }
 
   function branchesForBusiness(businessId: string) {
     return branches.filter((branch) => branch.businessId === businessId)

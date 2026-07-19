@@ -40,7 +40,8 @@
       "Bash(node verify-step56.mjs)",
       "Bash(mv /tmp/diag-reload.mjs /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/diag-reload.mjs)",
       "Bash(node diag-reload.mjs)",
-      "Bash(rm -f /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/diag-reload2.mjs)"
+      "Bash(rm -f /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/diag-reload2.mjs)",
+      "Bash(node verify-dashboard.mjs)"
     ],
     "additionalDirectories": [
       "/tmp"
