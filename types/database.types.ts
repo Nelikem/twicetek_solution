@@ -290,6 +290,7 @@ export type Database = {
           gps_address: string | null
           id: string
           is_headquarters: boolean
+          manager_name: string | null
           manager_user_id: string | null
           name: string
           opening_hours: Json | null
@@ -297,6 +298,7 @@ export type Database = {
           phone: string | null
           physical_address: string | null
           pos_enabled: boolean
+          sort_order: number
           status: Database["public"]["Enums"]["organization_status"]
           updated_at: string
           warehouse_enabled: boolean
@@ -311,6 +313,7 @@ export type Database = {
           gps_address?: string | null
           id?: string
           is_headquarters?: boolean
+          manager_name?: string | null
           manager_user_id?: string | null
           name: string
           opening_hours?: Json | null
@@ -318,6 +321,7 @@ export type Database = {
           phone?: string | null
           physical_address?: string | null
           pos_enabled?: boolean
+          sort_order?: number
           status?: Database["public"]["Enums"]["organization_status"]
           updated_at?: string
           warehouse_enabled?: boolean
@@ -332,6 +336,7 @@ export type Database = {
           gps_address?: string | null
           id?: string
           is_headquarters?: boolean
+          manager_name?: string | null
           manager_user_id?: string | null
           name?: string
           opening_hours?: Json | null
@@ -339,6 +344,7 @@ export type Database = {
           phone?: string | null
           physical_address?: string | null
           pos_enabled?: boolean
+          sort_order?: number
           status?: Database["public"]["Enums"]["organization_status"]
           updated_at?: string
           warehouse_enabled?: boolean

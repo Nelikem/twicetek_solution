@@ -136,7 +136,12 @@ export function Step2Form() {
           <Button type="button" variant="outline" onClick={() => router.push("/onboarding/step-1")}>
             Back
           </Button>
-          <Button type="button" disabled title="Steps 3-6 are coming in a future release">
+          <Button
+            type="button"
+            disabled={businesses.length === 0}
+            title={businesses.length === 0 ? "Add at least one business to continue" : undefined}
+            onClick={() => router.push("/onboarding/step-3")}
+          >
             Continue
           </Button>
         </div>

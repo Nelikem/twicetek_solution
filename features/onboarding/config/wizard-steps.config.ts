@@ -38,7 +38,7 @@ export const WIZARD_STEPS: readonly WizardStepConfig[] = [
     title: "Branches",
     description: "Add branches under each business.",
     path: "/onboarding/step-3",
-    status: "locked",
+    status: "active",
   },
   {
     id: 4,
