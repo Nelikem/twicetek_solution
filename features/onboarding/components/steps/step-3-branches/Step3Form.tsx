@@ -36,6 +36,7 @@ export function Step3Form() {
   }, [draftId])
 
   const businesses = businessesQuery.data ?? []
+  const totalBranches = branchesQuery.data?.length ?? 0
 
   const branchesByBusiness = useMemo(() => {
     const map = new Map<string, Branch[]>()
@@ -121,9 +122,21 @@ export function Step3Form() {
           <Button type="button" variant="outline" onClick={() => router.push("/onboarding/step-2")}>
             Back
           </Button>
-          <Button type="button" disabled title="Steps 4-6 are coming in a future release">
-            Continue
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Branches are optional — unlike Step 2's business requirement, Step 3's
+             * Continue is never gated on branch count. This button just makes that
+             * explicit while zero branches exist. Both buttons stay disabled for now
+             * since Step 4 doesn't exist yet; wire both to router.push("/onboarding/step-4")
+             * without adding a branch-count check when it does. */}
+            {totalBranches === 0 && (
+              <Button type="button" variant="ghost" disabled title="Steps 4-6 are coming in a future release">
+                Skip for now
+              </Button>
+            )}
+            <Button type="button" disabled title="Steps 4-6 are coming in a future release">
+              Continue
+            </Button>
+          </div>
         </div>
       </motion.div>
     </StepTransition>
