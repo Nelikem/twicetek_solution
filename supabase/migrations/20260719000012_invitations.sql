@@ -3,7 +3,7 @@ create table invitations (
   organization_id uuid not null references organizations (id) on delete cascade,
   business_id uuid references businesses (id),
   branch_id uuid references branches (id),
-  email citext not null,
+  email extensions.citext not null,
   role_id uuid not null references roles (id),
   invited_by uuid references profiles (id),
   token text not null unique,

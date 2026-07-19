@@ -13,7 +13,7 @@ create table organizations (
   registration_number text,
   tax_id text,
   industry text,
-  org_email citext,
+  org_email extensions.citext,
   phone text,
   website text,
   country text,

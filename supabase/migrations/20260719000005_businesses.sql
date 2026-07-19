@@ -10,7 +10,7 @@ create table businesses (
   industry text,
   logo_path text,
   description text,
-  email citext,
+  email extensions.citext,
   phone text,
   website text,
   manager_user_id uuid references profiles (id),

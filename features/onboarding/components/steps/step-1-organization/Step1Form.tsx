@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm, useWatch } from "react-hook-form"
 import { useDebouncedCallback } from "use-debounce"
@@ -13,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { AutosaveIndicator } from "@/components/shared/AutosaveIndicator"
 import { StepTransition } from "@/features/onboarding/components/StepTransition"
 import { UnsavedChangesGuard } from "@/features/onboarding/components/UnsavedChangesGuard"
-import { LogoDropzone } from "@/features/onboarding/components/steps/step-1-organization/LogoDropzone"
+import { LogoDropzone } from "@/features/onboarding/components/shared/LogoDropzone"
 import { OrgContactFields } from "@/features/onboarding/components/steps/step-1-organization/OrgContactFields"
 import { OrgIdentityFields } from "@/features/onboarding/components/steps/step-1-organization/OrgIdentityFields"
 import { OrgLocationFields } from "@/features/onboarding/components/steps/step-1-organization/OrgLocationFields"
@@ -21,7 +22,9 @@ import { OrgRegionalFields } from "@/features/onboarding/components/steps/step-1
 import { staggerContainerVariants, staggerItemVariants } from "@/lib/animation-variants"
 import { useEnsureDraftMutation } from "@/features/onboarding/hooks/useEnsureDraftMutation"
 import { useOrganizationDraftQuery } from "@/features/onboarding/hooks/useOrganizationDraftQuery"
+import { useOrganizationLogoUrlQuery } from "@/features/onboarding/hooks/useOrganizationLogoUrlQuery"
 import { useUpdateOrganizationInfoMutation } from "@/features/onboarding/hooks/useUpdateOrganizationInfoMutation"
+import { useUploadLogoMutation } from "@/features/onboarding/hooks/useUploadLogoMutation"
 import {
   ORGANIZATION_INFO_DEFAULT_VALUES,
   organizationInfoDraftSchema,
@@ -56,6 +59,7 @@ function toFormValues(draft: OrganizationDraft): OrganizationInfoDraftValues {
 
 export function Step1Form() {
   const prefersReducedMotion = useReducedMotion()
+  const router = useRouter()
   const draftId = useOnboardingWizardStore((state) => state.draftId)
   const autosaveStatus = useOnboardingWizardStore((state) => state.autosaveStatus)
   const setAutosaveStatus = useOnboardingWizardStore((state) => state.setAutosaveStatus)
@@ -63,6 +67,7 @@ export function Step1Form() {
   const ensureDraft = useEnsureDraftMutation()
   const draftQuery = useOrganizationDraftQuery(draftId)
   const updateMutation = useUpdateOrganizationInfoMutation(draftId)
+  const uploadLogo = useUploadLogoMutation(draftId)
 
   const hasHydrated = useRef(false)
 
@@ -78,6 +83,7 @@ export function Step1Form() {
     () => organizationInfoSchema.safeParse(watchedValues).success,
     [watchedValues]
   )
+  const { data: logoSignedUrl } = useOrganizationLogoUrlQuery(watchedValues?.logoPath)
 
   useEffect(() => {
     if (!draftId && !ensureDraft.isPending && !ensureDraft.isSuccess) {
@@ -164,7 +170,13 @@ export function Step1Form() {
             </motion.div>
 
             <motion.div variants={staggerItemVariants}>
-              <LogoDropzone draftId={draftId} logoPath={watchedValues?.logoPath} />
+              <LogoDropzone
+                disabled={!draftId}
+                signedUrl={logoSignedUrl}
+                label="Company logo"
+                helperText="Drag & drop, or click to upload. PNG, JPG, or WebP — compressed automatically."
+                onUpload={(file) => uploadLogo.mutateAsync(file)}
+              />
             </motion.div>
 
             <motion.div variants={staggerItemVariants}>
@@ -196,7 +208,11 @@ export function Step1Form() {
                   </motion.span>
                 )}
               </p>
-              <Button type="button" disabled title="Steps 2-6 are coming in a future release">
+              <Button
+                type="button"
+                disabled={!isComplete}
+                onClick={() => router.push("/onboarding/step-2")}
+              >
                 Continue
               </Button>
             </motion.div>

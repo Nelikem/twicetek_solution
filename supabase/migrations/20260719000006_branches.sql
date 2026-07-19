@@ -8,7 +8,7 @@ create table branches (
   name text not null,
   code text,
   manager_user_id uuid references profiles (id),
-  email citext,
+  email extensions.citext,
   phone text,
   gps_address text,
   physical_address text,

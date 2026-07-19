@@ -1,9 +1,9 @@
 import { Building2 } from "lucide-react"
 
 import { FieldGroup, FieldSet } from "@/components/ui/field"
-import { SectionLegend } from "@/features/onboarding/components/steps/step-1-organization/fields/SectionLegend"
-import { TextField } from "@/features/onboarding/components/steps/step-1-organization/fields/TextField"
-import { SelectField } from "@/features/onboarding/components/steps/step-1-organization/fields/SelectField"
+import { SectionLegend } from "@/features/onboarding/components/fields/SectionLegend"
+import { TextField } from "@/features/onboarding/components/fields/TextField"
+import { SelectField } from "@/features/onboarding/components/fields/SelectField"
 import { INDUSTRIES } from "@/utils/constants"
 
 export function OrgIdentityFields() {

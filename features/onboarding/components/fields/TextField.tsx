@@ -1,24 +1,29 @@
 "use client"
 
-import { useFormContext, type FieldError } from "react-hook-form"
+import { useFormContext, type FieldError, type FieldValues, type Path } from "react-hook-form"
 
 import { Input } from "@/components/ui/input"
 import { Field, FieldContent, FieldError as FieldErrorMessage, FieldLabel } from "@/components/ui/field"
-import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/organization-info.schema"
 
-interface TextFieldProps {
-  name: keyof OrganizationInfoDraftValues
+interface TextFieldProps<TValues extends FieldValues> {
+  name: Path<TValues>
   label: string
   type?: string
   autoComplete?: string
   placeholder?: string
 }
 
-export function TextField({ name, label, type = "text", autoComplete, placeholder }: TextFieldProps) {
+export function TextField<TValues extends FieldValues>({
+  name,
+  label,
+  type = "text",
+  autoComplete,
+  placeholder,
+}: TextFieldProps<TValues>) {
   const {
     register,
     formState: { errors },
-  } = useFormContext<OrganizationInfoDraftValues>()
+  } = useFormContext<TValues>()
   const error = errors[name] as FieldError | undefined
 
   return (

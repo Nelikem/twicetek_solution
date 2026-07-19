@@ -1,22 +1,25 @@
 "use client"
 
-import { useFormContext, type FieldError } from "react-hook-form"
+import { useFormContext, type FieldError, type FieldValues, type Path } from "react-hook-form"
 
 import { Textarea } from "@/components/ui/textarea"
 import { Field, FieldContent, FieldError as FieldErrorMessage, FieldLabel } from "@/components/ui/field"
-import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/organization-info.schema"
 
-interface TextareaFieldProps {
-  name: keyof OrganizationInfoDraftValues
+interface TextareaFieldProps<TValues extends FieldValues> {
+  name: Path<TValues>
   label: string
   placeholder?: string
 }
 
-export function TextareaField({ name, label, placeholder }: TextareaFieldProps) {
+export function TextareaField<TValues extends FieldValues>({
+  name,
+  label,
+  placeholder,
+}: TextareaFieldProps<TValues>) {
   const {
     register,
     formState: { errors },
-  } = useFormContext<OrganizationInfoDraftValues>()
+  } = useFormContext<TValues>()
   const error = errors[name] as FieldError | undefined
 
   return (

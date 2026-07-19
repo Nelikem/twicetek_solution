@@ -1,4 +1,5 @@
 import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/organization-info.schema"
+import type { BusinessDraftValues } from "@/features/onboarding/schemas/business.schema"
 
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error"
 
@@ -20,6 +21,16 @@ export interface OrganizationDraft extends OrganizationInfoDraftValues {
   ownerUserId: string
   onboardingCurrentStep: number
   onboardingLastSavedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+/** Domain-shaped (camelCase) business row — the DB row mapped by the service layer. */
+export interface Business extends BusinessDraftValues {
+  id: string
+  organizationId: string
+  status: "draft" | "active" | "suspended" | "archived"
+  sortOrder: number
   createdAt: string
   updatedAt: string
 }

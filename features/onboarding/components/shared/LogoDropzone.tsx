@@ -7,20 +7,26 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { ImageUp, Loader2 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useOrganizationLogoUrlQuery } from "@/features/onboarding/hooks/useOrganizationLogoUrlQuery"
-import { useUploadLogoMutation } from "@/features/onboarding/hooks/useUploadLogoMutation"
 import { ORGANIZATION_LOGO_ACCEPTED_TYPES, ORGANIZATION_LOGO_MAX_BYTES } from "@/utils/constants"
 
 interface LogoDropzoneProps {
-  draftId: string | null
-  logoPath: string | null | undefined
+  disabled?: boolean
+  signedUrl: string | undefined
+  label: string
+  helperText: string
+  onUpload: (file: File) => Promise<{ logoPath: string; signedUrl: string }>
 }
 
-export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
+/**
+ * Purely presentational: drag/drop, client-side compression trigger, and the
+ * loading/preview/empty crossfade. The actual upload mechanics (which bucket, which
+ * row gets patched) are the caller's responsibility via `onUpload` — this is what
+ * lets the same component serve both organization and business logos.
+ */
+export function LogoDropzone({ disabled, signedUrl, label, helperText, onUpload }: LogoDropzoneProps) {
   const prefersReducedMotion = useReducedMotion()
   const [localPreview, setLocalPreview] = useState<string | null>(null)
-  const uploadMutation = useUploadLogoMutation(draftId)
-  const { data: signedUrl } = useOrganizationLogoUrlQuery(localPreview ? null : logoPath)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     return () => {
@@ -28,7 +34,7 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
     }
   }, [localPreview])
 
-  function onDrop(accepted: File[], rejections: FileRejection[]) {
+  async function onDrop(accepted: File[], rejections: FileRejection[]) {
     if (rejections.length > 0) {
       toast.error(rejections[0]?.errors[0]?.message ?? "This file can't be used as a logo")
       return
@@ -42,11 +48,14 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
       return URL.createObjectURL(file)
     })
 
-    uploadMutation.mutate(file, {
-      onError: (error) => {
-        toast.error(error instanceof Error ? error.message : "Logo upload failed")
-      },
-    })
+    setIsUploading(true)
+    try {
+      await onUpload(file)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Logo upload failed")
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -54,12 +63,12 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
     accept: Object.fromEntries(ORGANIZATION_LOGO_ACCEPTED_TYPES.map((type) => [type, []])),
     maxSize: ORGANIZATION_LOGO_MAX_BYTES,
     maxFiles: 1,
-    disabled: !draftId || uploadMutation.isPending,
+    disabled: !!disabled || isUploading,
   })
 
   const previewSrc = localPreview ?? signedUrl
-  const isDisabled = !draftId || uploadMutation.isPending
-  const visualState = uploadMutation.isPending ? "loading" : previewSrc ? "preview" : "empty"
+  const isDisabled = !!disabled || isUploading
+  const visualState = isUploading ? "loading" : previewSrc ? "preview" : "empty"
 
   return (
     <div className="flex items-center gap-4">
@@ -77,7 +86,7 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
           isDisabled && "cursor-not-allowed opacity-60"
         )}
       >
-        <input {...getInputProps()} aria-label="Company logo" />
+        <input {...getInputProps()} aria-label={label} />
         <AnimatePresence mode="wait" initial={false}>
           {visualState === "loading" ? (
             <motion.div
@@ -93,7 +102,7 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
             <motion.img
               key="preview"
               src={previewSrc}
-              alt="Company logo preview"
+              alt={`${label} preview`}
               initial={prefersReducedMotion ? undefined : { opacity: 0, scale: 1.15 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={prefersReducedMotion ? undefined : { opacity: 0 }}
@@ -114,10 +123,8 @@ export function LogoDropzone({ draftId, logoPath }: LogoDropzoneProps) {
         </AnimatePresence>
       </div>
       <div className="flex flex-col gap-0.5">
-        <p className="text-sm font-medium">Company logo</p>
-        <p className="text-xs text-muted-foreground">
-          Drag & drop, or click to upload. PNG, JPG, or WebP — compressed automatically.
-        </p>
+        <p className="text-sm font-medium">{label}</p>
+        <p className="text-xs text-muted-foreground">{helperText}</p>
       </div>
     </div>
   )

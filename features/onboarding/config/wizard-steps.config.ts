@@ -30,7 +30,7 @@ export const WIZARD_STEPS: readonly WizardStepConfig[] = [
     title: "Businesses",
     description: "Register the businesses your organization operates.",
     path: "/onboarding/step-2",
-    status: "locked",
+    status: "active",
   },
   {
     id: 3,

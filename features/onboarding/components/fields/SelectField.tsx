@@ -1,6 +1,6 @@
 "use client"
 
-import { Controller, useFormContext, type FieldError } from "react-hook-form"
+import { Controller, useFormContext, type FieldError, type FieldValues, type Path } from "react-hook-form"
 
 import {
   Select,
@@ -10,18 +10,22 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Field, FieldContent, FieldError as FieldErrorMessage, FieldLabel } from "@/components/ui/field"
-import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/organization-info.schema"
 import type { SelectOption } from "@/utils/constants"
 
-interface SelectFieldProps {
-  name: keyof OrganizationInfoDraftValues
+interface SelectFieldProps<TValues extends FieldValues> {
+  name: Path<TValues>
   label: string
   placeholder: string
   options: readonly SelectOption[]
 }
 
-export function SelectField({ name, label, placeholder, options }: SelectFieldProps) {
-  const { control } = useFormContext<OrganizationInfoDraftValues>()
+export function SelectField<TValues extends FieldValues>({
+  name,
+  label,
+  placeholder,
+  options,
+}: SelectFieldProps<TValues>) {
+  const { control } = useFormContext<TValues>()
 
   return (
     <Controller

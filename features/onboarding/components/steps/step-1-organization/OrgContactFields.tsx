@@ -1,8 +1,8 @@
 import { Mail } from "lucide-react"
 
 import { FieldGroup, FieldSet } from "@/components/ui/field"
-import { SectionLegend } from "@/features/onboarding/components/steps/step-1-organization/fields/SectionLegend"
-import { TextField } from "@/features/onboarding/components/steps/step-1-organization/fields/TextField"
+import { SectionLegend } from "@/features/onboarding/components/fields/SectionLegend"
+import { TextField } from "@/features/onboarding/components/fields/TextField"
 
 export function OrgContactFields() {
   return (

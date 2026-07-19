@@ -471,11 +471,13 @@ export type Database = {
           industry: string | null
           legal_name: string | null
           logo_path: string | null
+          manager_name: string | null
           manager_user_id: string | null
           name: string
           organization_id: string
           phone: string | null
           registration_number: string | null
+          sort_order: number
           status: Database["public"]["Enums"]["organization_status"]
           tax_id: string | null
           timezone: string | null
@@ -493,11 +495,13 @@ export type Database = {
           industry?: string | null
           legal_name?: string | null
           logo_path?: string | null
+          manager_name?: string | null
           manager_user_id?: string | null
           name: string
           organization_id: string
           phone?: string | null
           registration_number?: string | null
+          sort_order?: number
           status?: Database["public"]["Enums"]["organization_status"]
           tax_id?: string | null
           timezone?: string | null
@@ -515,11 +519,13 @@ export type Database = {
           industry?: string | null
           legal_name?: string | null
           logo_path?: string | null
+          manager_name?: string | null
           manager_user_id?: string | null
           name?: string
           organization_id?: string
           phone?: string | null
           registration_number?: string | null
+          sort_order?: number
           status?: Database["public"]["Enums"]["organization_status"]
           tax_id?: string | null
           timezone?: string | null
