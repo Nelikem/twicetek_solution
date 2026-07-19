@@ -15,6 +15,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -784,6 +789,7 @@ export type Database = {
           created_by: string | null
           id: string
           invited_by: string | null
+          job_title: string | null
           joined_at: string | null
           organization_id: string
           role_id: string | null
@@ -796,6 +802,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           invited_by?: string | null
+          job_title?: string | null
           joined_at?: string | null
           organization_id: string
           role_id?: string | null
@@ -808,6 +815,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           invited_by?: string | null
+          job_title?: string | null
           joined_at?: string | null
           organization_id?: string
           role_id?: string | null
@@ -1289,6 +1297,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_owner_membership: {
+        Args: { org_id: string }
+        Returns: {
+          created_at: string
+          created_by: string | null
+          id: string
+          invited_by: string | null
+          job_title: string | null
+          joined_at: string | null
+          organization_id: string
+          role_id: string | null
+          status: Database["public"]["Enums"]["member_status"]
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "organization_members"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_or_create_draft_organization: {
         Args: never
         Returns: {
@@ -1486,4 +1516,3 @@ export const Constants = {
     },
   },
 } as const
-

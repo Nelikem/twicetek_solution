@@ -46,7 +46,7 @@ export const WIZARD_STEPS: readonly WizardStepConfig[] = [
     title: "Administrator",
     description: "Create the enterprise owner account.",
     path: "/onboarding/step-4",
-    status: "locked",
+    status: "active",
   },
   {
     id: 5,

@@ -1,6 +1,7 @@
 import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/organization-info.schema"
 import type { BusinessDraftValues } from "@/features/onboarding/schemas/business.schema"
 import type { BranchDraftValues } from "@/features/onboarding/schemas/branch.schema"
+import type { AdministratorDraftValues } from "@/features/onboarding/schemas/administrator.schema"
 
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error"
 
@@ -43,6 +44,20 @@ export interface Branch extends BranchDraftValues {
   businessId: string
   status: "draft" | "active" | "suspended" | "archived"
   sortOrder: number
+  createdAt: string
+  updatedAt: string
+}
+
+/** Domain-shaped (camelCase) administrator — combines organization_members +
+ * profiles for the current user within one organization. The only step whose
+ * entity spans two tables; the service layer hides that split behind this type. */
+export interface Administrator extends AdministratorDraftValues {
+  membershipId: string
+  organizationId: string
+  userId: string
+  roleId: string | null
+  status: "invited" | "active" | "suspended"
+  joinedAt: string | null
   createdAt: string
   updatedAt: string
 }
