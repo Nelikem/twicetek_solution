@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 import { businessKeys } from "@/features/onboarding/hooks/business-keys"
 import type { Business } from "@/features/onboarding/types/onboarding.types"
@@ -19,6 +20,9 @@ export function useCreateBusinessMutation(organizationId: string | null) {
         ...(old ?? []),
         business,
       ])
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Couldn't add a business")
     },
   })
 }

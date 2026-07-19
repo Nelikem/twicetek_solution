@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 import { businessKeys } from "@/features/onboarding/hooks/business-keys"
 import type { Business } from "@/features/onboarding/types/onboarding.types"
@@ -23,8 +24,9 @@ export function useDeleteBusinessMutation(organizationId: string | null) {
       queryClient.setQueryData<Business[]>(queryKey, (old) => old?.filter((b) => b.id !== id))
       return { previous }
     },
-    onError: (_error, _id, context) => {
+    onError: (error, _id, context) => {
       if (context?.previous) queryClient.setQueryData(queryKey, context.previous)
+      toast.error(error instanceof Error ? error.message : "Couldn't delete that business")
     },
   })
 }
