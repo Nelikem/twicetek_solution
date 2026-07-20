@@ -29,11 +29,14 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  // Defaults straight to step-1 rather than the /onboarding redirector page: right
-  // after signInWithPassword, an extra server-redirect hop through /onboarding can
-  // race the session cookie during a client-side router.push, sometimes stalling on
-  // the intermediate route. Going directly to the real destination avoids that hop.
-  const next = searchParams.get("next") ?? "/onboarding/step-1"
+  // No hardcoded default here anymore -- when there's no explicit `next` (e.g. the
+  // user wasn't redirected here from some specific protected page), useLoginMutation
+  // itself determines whether this account has already finished onboarding and
+  // returns the right destination (/welcome vs /onboarding/step-1), computed
+  // directly from the client session rather than bouncing through the /onboarding
+  // server redirector (which would race the just-set session cookie on a
+  // client-side router.push).
+  const next = searchParams.get("next")
   const [serverError, setServerError] = useState<string | null>(null)
   const login = useLoginMutation()
 
@@ -56,8 +59,8 @@ function LoginForm() {
   async function onSubmit(values: LoginValues) {
     setServerError(null)
     try {
-      await login.mutateAsync(values)
-      router.push(next)
+      const defaultDestination = await login.mutateAsync(values)
+      router.push(next ?? defaultDestination)
       router.refresh()
     } catch (error) {
       setServerError(error instanceof Error ? error.message : "Couldn't sign in")

@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import type { LoginValues } from "@/features/auth/schemas/security.schema"
 import { isAccountLocked, recordLoginAttempt } from "@/services/security.service"
+import { getOrganizationByOwner } from "@/services/organizations.service"
 import { createClient } from "@/lib/supabase/client"
 
 const REMEMBER_COOKIE = "tk-remember"
@@ -16,6 +17,15 @@ function writeRememberMarker(rememberMe: boolean) {
   document.cookie = `${REMEMBER_COOKIE}=${rememberMe ? "1" : "0"}; path=/; samesite=lax${maxAge}`
 }
 
+/**
+ * Returns the destination a login without an explicit `next` param should land
+ * on: the organization's own draft/active status is the source of truth for
+ * "has this user already finished onboarding", not just "are they authenticated"
+ * -- /onboarding/page.tsx's server redirect makes the same check for the paths
+ * that go through it (e.g. middleware bouncing an already-signed-in visitor away
+ * from /login), but the login form itself deliberately skips that server hop
+ * (racing the just-set session cookie) and needs to make the same call directly.
+ */
 export function useLoginMutation() {
   return useMutation({
     mutationFn: async ({ email, password, rememberMe }: LoginValues) => {
@@ -26,7 +36,7 @@ export function useLoginMutation() {
       }
 
       const authClient = createClient({ rememberMe })
-      const { error } = await authClient.auth.signInWithPassword({ email, password })
+      const { data, error } = await authClient.auth.signInWithPassword({ email, password })
 
       await recordLoginAttempt(readClient, {
         email,
@@ -41,6 +51,9 @@ export function useLoginMutation() {
       }
 
       writeRememberMarker(rememberMe)
+
+      const org = data.user ? await getOrganizationByOwner(readClient, data.user.id) : null
+      return org?.status === "active" ? "/welcome" : "/onboarding/step-1"
     },
   })
 }

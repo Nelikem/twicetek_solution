@@ -56,7 +56,8 @@
       "Bash(curl -s \"http://127.0.0.1:54324/api/v1/messages\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(JSON.stringify\\(j,null,2\\).slice\\(0,1000\\)\\)}\\)\")",
       "Bash(curl -s \"http://127.0.0.1:54324/api/v1/message/6Al0kU5O25AND8HKUqxHTJ\")",
-      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(j.HTML || j.Text\\)}\\)\")"
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(j.HTML || j.Text\\)}\\)\")",
+      "Bash(node verify-postlogin-redirect.mjs)"
     ],
     "additionalDirectories": [
       "/tmp"
