@@ -46,7 +46,7 @@ export function Step6Form() {
   const isComplete = organizationQuery.data?.status === "active" || completeMutation.isSuccess
 
   useEffect(() => {
-    if (isComplete) router.push("/dashboard")
+    if (isComplete) router.push("/welcome")
   }, [isComplete, router])
 
   const isLoading =

@@ -7,7 +7,7 @@ const AUTH_ROUTES = ["/login", "/onboarding/register"]
 // /onboarding itself branches on auth state in its own page component, and
 // /onboarding/register is the pre-auth registration step — neither belongs here.
 const PROTECTED_EXACT_EXCLUSIONS = ["/onboarding", "/onboarding/register"]
-const PROTECTED_PREFIXES = ["/onboarding", "/dashboard"]
+const PROTECTED_PREFIXES = ["/onboarding", "/dashboard", "/welcome"]
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request })

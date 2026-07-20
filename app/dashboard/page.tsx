@@ -1,12 +1,28 @@
+import { cookies } from "next/headers"
+import Link from "next/link"
 import { redirect } from "next/navigation"
-import { Building2, ShieldCheck, Sparkles } from "lucide-react"
+import { Building2, MapPin, ShieldCheck, Sparkles } from "lucide-react"
 
+import { WORKSPACE_COOKIE } from "@/app/welcome/workspace-cookie"
 import { Badge } from "@/components/ui/badge"
 import { SUBSCRIPTION_PLANS } from "@/features/onboarding/config/subscription-plans.config"
 import { createClient } from "@/lib/supabase/server"
 import { getAdministrator } from "@/services/administrators.service"
+import { listBranches } from "@/services/branches.service"
+import { listBusinesses } from "@/services/businesses.service"
 import { getOrganizationByOwner } from "@/services/organizations.service"
 import { getSubscription } from "@/services/subscriptions.service"
+
+function readWorkspaceCookie(raw: string | undefined): { businessId: string; branchId: string | null } | null {
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw)
+    if (typeof parsed?.businessId !== "string") return null
+    return { businessId: parsed.businessId, branchId: typeof parsed.branchId === "string" ? parsed.branchId : null }
+  } catch {
+    return null
+  }
+}
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -20,11 +36,21 @@ export default async function DashboardPage() {
     redirect("/onboarding")
   }
 
-  const [administrator, subscription] = await Promise.all([
+  const [administrator, subscription, businesses, branches] = await Promise.all([
     getAdministrator(supabase, org.id),
     getSubscription(supabase, org.id),
+    listBusinesses(supabase, org.id),
+    listBranches(supabase, org.id),
   ])
   const plan = subscription ? SUBSCRIPTION_PLANS.find((p) => p.id === subscription.planId) : undefined
+
+  // Not present for pre-existing sessions from before this feature shipped, or an
+  // expired cookie -- the dashboard should still be reachable on its own, not a
+  // hard redirect back to /welcome.
+  const cookieStore = await cookies()
+  const workspace = readWorkspaceCookie(cookieStore.get(WORKSPACE_COOKIE)?.value)
+  const workspaceBusiness = workspace ? businesses.find((b) => b.id === workspace.businessId) : undefined
+  const workspaceBranch = workspace?.branchId ? branches.find((b) => b.id === workspace.branchId) : undefined
 
   return (
     <div className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center gap-8 px-6 py-16 text-center">
@@ -41,6 +67,19 @@ export default async function DashboardPage() {
           full features are coming in a future release.
         </p>
       </div>
+
+      {workspaceBusiness && (
+        <div className="flex items-center gap-2 rounded-full border border-border/60 px-4 py-1.5 text-sm">
+          <MapPin className="size-3.5 text-primary" />
+          <span>
+            {workspaceBusiness.name}
+            {workspaceBranch && <span className="text-muted-foreground"> · {workspaceBranch.name}</span>}
+          </span>
+          <Link href="/welcome" className="text-xs text-primary underline underline-offset-4">
+            Switch workspace
+          </Link>
+        </div>
+      )}
 
       <div className="grid w-full gap-4 sm:grid-cols-2">
         <div className="flex flex-col items-center gap-2 rounded-xl border border-border/60 p-4">
