@@ -4,7 +4,7 @@ import type { BusinessDraftValues } from "@/features/onboarding/schemas/business
 import type { Business } from "@/features/onboarding/types/onboarding.types"
 import type { Database, Tables } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 type BusinessRow = Tables<"businesses">
 
 function toDomain(row: BusinessRow): Business {

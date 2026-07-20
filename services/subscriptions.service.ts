@@ -4,7 +4,7 @@ import type { SubscriptionDraftValues } from "@/features/onboarding/schemas/subs
 import type { Subscription } from "@/features/onboarding/types/onboarding.types"
 import type { Database, Tables } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 type SubscriptionRow = Tables<"subscriptions">
 
 function toDomain(row: SubscriptionRow): Subscription {

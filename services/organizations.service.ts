@@ -4,7 +4,7 @@ import type { OrganizationInfoDraftValues } from "@/features/onboarding/schemas/
 import type { OrganizationDraft } from "@/features/onboarding/types/onboarding.types"
 import type { Database, Tables } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 type OrganizationRow = Tables<"organizations">
 
 function toDomain(row: OrganizationRow): OrganizationDraft {

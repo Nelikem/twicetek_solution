@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 
 import type { Database } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 
 type LogoBucket = "organization-logos" | "business-logos"
 

@@ -4,14 +4,18 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { z } from "zod"
 import { motion, useReducedMotion } from "framer-motion"
-import { Loader2, MailCheck, UserPlus } from "lucide-react"
+import { Loader2, UserPlus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Progress } from "@/components/ui/progress"
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { PasswordInput } from "@/features/auth/components/PasswordInput"
+import { passwordSchema } from "@/features/auth/schemas/security.schema"
+import { getPasswordStrength } from "@/features/auth/utils/password-strength"
 import { StepTransition } from "@/features/onboarding/components/StepTransition"
 import { staggerContainerVariants, staggerItemVariants } from "@/lib/animation-variants"
 import { createClient } from "@/lib/supabase/client"
@@ -20,7 +24,7 @@ const registerSchema = z
   .object({
     fullName: z.string().min(2, "Enter your full name"),
     email: z.string().email("Enter a valid email address"),
-    password: z.string().min(8, "At least 8 characters"),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -34,13 +38,16 @@ export default function OnboardingRegisterPage() {
   const prefersReducedMotion = useReducedMotion()
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
-  const [submitted, setSubmitted] = useState(false)
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({ resolver: zodResolver(registerSchema) })
+
+  const password = useWatch({ control, name: "password" }) ?? ""
+  const strength = getPasswordStrength(password)
 
   async function onSubmit(values: RegisterValues) {
     setServerError(null)
@@ -59,39 +66,7 @@ export default function OnboardingRegisterPage() {
       return
     }
 
-    setSubmitted(true)
-    router.refresh()
-  }
-
-  if (submitted) {
-    return (
-      <StepTransition stepKey="register-submitted">
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <motion.div
-            initial={prefersReducedMotion ? undefined : { scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="relative flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary"
-          >
-            <div aria-hidden className="absolute inset-0 rounded-full bg-primary/20 blur-lg" />
-            <MailCheck className="relative size-6" />
-          </motion.div>
-          <h1 className="text-xl font-semibold tracking-tight">Check your inbox</h1>
-          <p className="max-w-sm text-sm text-muted-foreground">
-            We sent a verification link to confirm your email. Once confirmed, sign in to continue
-            setting up your organization.
-          </p>
-          <Button
-            render={<Link href="/login" />}
-            nativeButton={false}
-            variant="outline"
-            className="mt-2"
-          >
-            Back to sign in
-          </Button>
-        </div>
-      </StepTransition>
-    )
+    router.push(`/verify-email?email=${encodeURIComponent(values.email)}`)
   }
 
   return (
@@ -152,13 +127,18 @@ export default function OnboardingRegisterPage() {
               <Field data-invalid={!!errors.password}>
                 <FieldContent>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
+                  <PasswordInput
                     id="password"
-                    type="password"
                     autoComplete="new-password"
                     aria-invalid={!!errors.password}
                     {...register("password")}
                   />
+                  {password && (
+                    <div className="space-y-1">
+                      <Progress value={strength.percent} className="[&_[data-slot=progress-track]]:h-1.5" />
+                      <p className="text-xs text-muted-foreground">{strength.label}</p>
+                    </div>
+                  )}
                   <FieldError errors={[errors.password]} />
                 </FieldContent>
               </Field>
@@ -166,9 +146,8 @@ export default function OnboardingRegisterPage() {
               <Field data-invalid={!!errors.confirmPassword}>
                 <FieldContent>
                   <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
-                  <Input
+                  <PasswordInput
                     id="confirmPassword"
-                    type="password"
                     autoComplete="new-password"
                     aria-invalid={!!errors.confirmPassword}
                     {...register("confirmPassword")}

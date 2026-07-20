@@ -4,7 +4,7 @@ import type { BranchDraftValues } from "@/features/onboarding/schemas/branch.sch
 import type { Branch } from "@/features/onboarding/types/onboarding.types"
 import type { Database, Tables } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 type BranchRow = Tables<"branches">
 
 function toDomain(row: BranchRow): Branch {

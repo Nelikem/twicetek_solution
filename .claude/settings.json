@@ -42,7 +42,21 @@
       "Bash(node diag-reload.mjs)",
       "Bash(rm -f /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/diag-reload2.mjs)",
       "Bash(node verify-dashboard.mjs)",
-      "Bash(node verify-welcome.mjs)"
+      "Bash(node verify-welcome.mjs)",
+      "Bash(git stash *)",
+      "Bash(node verify-auth-security.mjs)",
+      "Bash(mv /tmp/debug-register.mjs /private/tmp/claude-504/-Users-nelikemagbanu-Desktop-Solutions-twicetek-solution/c15ffa24-00e0-4254-9cc4-0408e3680557/scratchpad/debug-register.mjs)",
+      "Bash(node debug-register.mjs)",
+      "Bash(cd /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution *)",
+      "Read(//Users/nelikemagbanu/.supabase/**)",
+      "Bash(curl -s -X POST http://127.0.0.1:54321/auth/v1/admin/users -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Content-Type: application/json' -d '{\"email\":\"redirect-debug-__CMDSUB_OUTPUT__@example.com\",\"password\":\"TestPass123!@#\",\"email_confirm\":true}')",
+      "Bash(curl -s -X POST http://127.0.0.1:54321/auth/v1/admin/generate_link -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU' -H 'Content-Type: application/json' -d '{\"type\":\"recovery\",\"email\":\"redirect-debug-__CMDSUB_OUTPUT__@example.com\",\"redirect_to\":\"http://localhost:3000/auth/callback?next=/reset-password\"}')",
+      "Bash(node -e ' *)",
+      "Bash(node debug-recovery-link.mjs)",
+      "Bash(curl -s \"http://127.0.0.1:54324/api/v1/messages\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(JSON.stringify\\(j,null,2\\).slice\\(0,1000\\)\\)}\\)\")",
+      "Bash(curl -s \"http://127.0.0.1:54324/api/v1/message/6Al0kU5O25AND8HKUqxHTJ\")",
+      "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(j.HTML || j.Text\\)}\\)\")"
     ],
     "additionalDirectories": [
       "/tmp"

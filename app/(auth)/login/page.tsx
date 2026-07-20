@@ -1,26 +1,22 @@
 "use client"
 
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { Controller, useForm } from "react-hook-form"
 import { motion } from "framer-motion"
 import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { createClient } from "@/lib/supabase/client"
-
-const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(1, "Enter your password"),
-})
-
-type LoginValues = z.infer<typeof loginSchema>
+import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/features/auth/components/PasswordInput"
+import { useLoginMutation } from "@/features/auth/hooks/useLoginMutation"
+import { loginSchema, type LoginValues } from "@/features/auth/schemas/security.schema"
 
 export default function LoginPage() {
   return (
@@ -39,29 +35,33 @@ function LoginForm() {
   // the intermediate route. Going directly to the real destination avoids that hop.
   const next = searchParams.get("next") ?? "/onboarding/step-1"
   const [serverError, setServerError] = useState<string | null>(null)
+  const login = useLoginMutation()
+
+  useEffect(() => {
+    if (searchParams.get("reset") === "success") {
+      toast.success("Password reset — sign in with your new password.")
+    }
+  }, [searchParams])
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
-  } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) })
+  } = useForm<LoginValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "", rememberMe: false },
+  })
 
   async function onSubmit(values: LoginValues) {
     setServerError(null)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword(values)
-
-    if (error) {
-      setServerError(
-        error.message === "Invalid login credentials"
-          ? "Incorrect email or password."
-          : error.message
-      )
-      return
+    try {
+      await login.mutateAsync(values)
+      router.push(next)
+      router.refresh()
+    } catch (error) {
+      setServerError(error instanceof Error ? error.message : "Couldn't sign in")
     }
-
-    router.push(next)
-    router.refresh()
   }
 
   return (
@@ -90,10 +90,17 @@ function LoginForm() {
 
               <Field data-invalid={!!errors.password}>
                 <FieldContent>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
+                  <div className="flex items-center justify-between">
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <Link
+                      href="/forgot-password"
+                      className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <PasswordInput
                     id="password"
-                    type="password"
                     autoComplete="current-password"
                     aria-invalid={!!errors.password}
                     {...register("password")}
@@ -101,6 +108,17 @@ function LoginForm() {
                   <FieldError errors={[errors.password]} />
                 </FieldContent>
               </Field>
+
+              <Controller
+                name="rememberMe"
+                control={control}
+                render={({ field }) => (
+                  <FieldLabel className="w-fit items-center gap-2">
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    <span className="text-sm font-normal">Remember me</span>
+                  </FieldLabel>
+                )}
+              />
 
               {serverError && (
                 <p role="alert" className="text-sm text-destructive">

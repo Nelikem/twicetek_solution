@@ -15,6 +15,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -721,6 +726,47 @@ export type Database = {
           },
         ]
       }
+      login_history: {
+        Row: {
+          created_at: string
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: unknown
+          success: boolean
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          success: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          success?: boolean
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "login_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
@@ -955,6 +1001,35 @@ export type Database = {
           },
         ]
       }
+      password_history: {
+        Row: {
+          created_at: string
+          id: string
+          password_hash: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          password_hash: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          password_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "password_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           action: string
@@ -986,28 +1061,49 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          display_name: string | null
           email: string
+          first_name: string | null
           full_name: string | null
           id: string
+          language: string
+          last_login: string | null
+          last_name: string | null
           phone: string | null
+          theme: string
+          timezone: string
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
           email: string
+          first_name?: string | null
           full_name?: string | null
           id: string
+          language?: string
+          last_login?: string | null
+          last_name?: string | null
           phone?: string | null
+          theme?: string
+          timezone?: string
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          display_name?: string | null
           email?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          language?: string
+          last_login?: string | null
+          last_name?: string | null
           phone?: string | null
+          theme?: string
+          timezone?: string
           updated_at?: string
         }
         Relationships: []
@@ -1095,6 +1191,44 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      security_logs: {
+        Row: {
+          created_at: string
+          event_type: Database["public"]["Enums"]["security_event_type"]
+          id: string
+          ip_address: unknown
+          metadata: Json
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: Database["public"]["Enums"]["security_event_type"]
+          id?: string
+          ip_address?: unknown
+          metadata?: Json
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["security_event_type"]
+          id?: string
+          ip_address?: unknown
+          metadata?: Json
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1292,6 +1426,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_password_reused: { Args: { p_password: string }; Returns: boolean }
       complete_onboarding: {
         Args: { org_id: string }
         Returns: {
@@ -1386,17 +1521,58 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      is_account_locked: { Args: { p_email: string }; Returns: boolean }
       is_branch_manager: { Args: { br_id: string }; Returns: boolean }
       is_business_manager: { Args: { biz_id: string }; Returns: boolean }
       is_org_admin: { Args: { org_id: string }; Returns: boolean }
       is_org_member: { Args: { org_id: string }; Returns: boolean }
       is_org_owner: { Args: { org_id: string }; Returns: boolean }
+      list_my_sessions: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          ip: string
+          is_current: boolean
+          not_after: string
+          refreshed_at: string
+          updated_at: string
+          user_agent: string
+        }[]
+      }
+      log_security_event: {
+        Args: {
+          p_event_type: Database["public"]["Enums"]["security_event_type"]
+          p_metadata?: Json
+        }
+        Returns: undefined
+      }
+      record_login_attempt: {
+        Args: {
+          p_email: string
+          p_failure_reason?: string
+          p_ip_address?: unknown
+          p_success: boolean
+          p_user_agent?: string
+        }
+        Returns: undefined
+      }
+      revoke_session: { Args: { p_session_id: string }; Returns: undefined }
     }
     Enums: {
       billing_cycle: "monthly" | "annual"
       invitation_status: "pending" | "accepted" | "revoked" | "expired"
       member_status: "invited" | "active" | "suspended"
       organization_status: "draft" | "active" | "suspended" | "archived"
+      security_event_type:
+        | "login_success"
+        | "login_failed"
+        | "logout"
+        | "password_changed"
+        | "password_reset_requested"
+        | "password_reset_completed"
+        | "profile_updated"
+        | "account_locked"
       subscription_status:
         | "trialing"
         | "active"
@@ -1537,6 +1713,16 @@ export const Constants = {
       invitation_status: ["pending", "accepted", "revoked", "expired"],
       member_status: ["invited", "active", "suspended"],
       organization_status: ["draft", "active", "suspended", "archived"],
+      security_event_type: [
+        "login_success",
+        "login_failed",
+        "logout",
+        "password_changed",
+        "password_reset_requested",
+        "password_reset_completed",
+        "profile_updated",
+        "account_locked",
+      ],
       subscription_status: [
         "trialing",
         "active",

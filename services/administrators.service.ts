@@ -4,7 +4,7 @@ import type { AdministratorDraftValues } from "@/features/onboarding/schemas/adm
 import type { Administrator } from "@/features/onboarding/types/onboarding.types"
 import type { Database, Tables } from "@/types/database.types"
 
-type TypedClient = SupabaseClient<Database>
+type TypedClient = SupabaseClient<Database, "public">
 type MembershipRow = Tables<"organization_members">
 type ProfileRow = Tables<"profiles">
 
