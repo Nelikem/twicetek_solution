@@ -5,6 +5,11 @@ import { env } from "./lib/env";
 const nextConfig: NextConfig = {
   async headers() {
     const supabaseOrigin = new URL(env.supabaseUrl()).origin;
+    // Realtime (notifications, presence) connects over a WebSocket, a distinct
+    // scheme from the http(s) origin above -- confirmed via a real CSP violation
+    // in the browser console during verification ("Connecting to 'ws://...'
+    // violates connect-src"), not a hypothetical. Same host, ws(s) scheme.
+    const supabaseRealtimeOrigin = supabaseOrigin.replace(/^http/, "ws");
 
     const csp = [
       "default-src 'self'",
@@ -28,7 +33,7 @@ const nextConfig: NextConfig = {
       // next/font/google self-hosts Geist/Geist Mono at build time -- zero
       // runtime requests to Google font origins, so no external font-src needed.
       "font-src 'self'",
-      `connect-src 'self' ${supabaseOrigin}`,
+      `connect-src 'self' ${supabaseOrigin} ${supabaseRealtimeOrigin}`,
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

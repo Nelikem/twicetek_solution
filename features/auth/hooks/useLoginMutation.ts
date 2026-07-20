@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import type { LoginValues } from "@/features/auth/schemas/security.schema"
 import { isAccountLocked, recordLoginAttempt } from "@/services/security.service"
-import { getOrganizationByOwner } from "@/services/organizations.service"
+import { getCurrentMembership } from "@/services/memberships.service"
 import { createClient } from "@/lib/supabase/client"
 
 const REMEMBER_COOKIE = "tk-remember"
@@ -25,6 +25,11 @@ function writeRememberMarker(rememberMe: boolean) {
  * that go through it (e.g. middleware bouncing an already-signed-in visitor away
  * from /login), but the login form itself deliberately skips that server hop
  * (racing the just-set session cookie) and needs to make the same call directly.
+ *
+ * Resolved via getCurrentMembership (organization_members-based), not
+ * getOrganizationByOwner (owner_user_id-based) -- the latter returns null for
+ * every non-owner role, which previously sent every non-owner login straight
+ * back to /onboarding/step-1 instead of their dashboard.
  */
 export function useLoginMutation() {
   return useMutation({
@@ -52,8 +57,8 @@ export function useLoginMutation() {
 
       writeRememberMarker(rememberMe)
 
-      const org = data.user ? await getOrganizationByOwner(readClient, data.user.id) : null
-      return org?.status === "active" ? "/welcome" : "/onboarding/step-1"
+      const membership = data.user ? await getCurrentMembership(readClient) : null
+      return membership?.organization.status === "active" ? "/welcome" : "/onboarding/step-1"
     },
   })
 }

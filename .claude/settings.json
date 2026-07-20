@@ -57,10 +57,43 @@
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(JSON.stringify\\(j,null,2\\).slice\\(0,1000\\)\\)}\\)\")",
       "Bash(curl -s \"http://127.0.0.1:54324/api/v1/message/6Al0kU5O25AND8HKUqxHTJ\")",
       "Bash(node -e \"let d='';process.stdin.on\\('data',c=>d+=c\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(d\\);console.log\\(j.HTML || j.Text\\)}\\)\")",
-      "Bash(node verify-postlogin-redirect.mjs)"
+      "Bash(node verify-postlogin-redirect.mjs)",
+      "Bash(xargs -I{} cat {})",
+      "Bash(supabase db *)",
+      "Bash(open -a Docker)",
+      "Bash(supabase stop *)",
+      "Bash(docker volume *)",
+      "Bash(docker rm *)",
+      "Bash(supabase start *)",
+      "Bash(brew upgrade *)",
+      "Bash(brew trust *)",
+      "Bash(HOMEBREW_NO_REQUIRE_TAP_TRUST=1 brew upgrade supabase)",
+      "Bash(cp /tmp/verify_complete_onboarding.mjs /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_complete_onboarding.mjs)",
+      "Bash(node scripts_verify_complete_onboarding.mjs)",
+      "Bash(rm /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_complete_onboarding.mjs /tmp/verify_complete_onboarding.mjs)",
+      "Bash(supabase gen *)",
+      "Bash(grep -n \"__InternalSupabase\" -A3 /tmp/database.types.new.ts)",
+      "Bash(sed -n '1,3p' /tmp/database.types.new.ts)",
+      "Bash(cp /tmp/database.types.final.ts /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/types/database.types.ts *)",
+      "Bash(echo \"EXIT_CODE:$?\")",
+      "Bash(node /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_membership.mjs)",
+      "Bash(echo \"started with PID $!\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3100/login)",
+      "Bash(node scripts_verify_dashboard.mjs)",
+      "Bash(kill %1)",
+      "Bash(lsof -ti:3100)",
+      "Bash(xargs kill -9)",
+      "Bash(nohup env NODE_ENV=production pnpm exec next start -p 3100)",
+      "Bash(disown)",
+      "Bash(curl -s -i http://localhost:3100/login)",
+      "Bash(echo \"TSC_EXIT:$?\")",
+      "Bash(cp /tmp/database.types.final.ts /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/types/database.types.ts)",
+      "Bash(rm -f /tmp/database.types.linked.ts /tmp/database.types.final.ts /tmp/gen_linked.err)",
+      "Bash(supabase migration *)"
     ],
     "additionalDirectories": [
-      "/tmp"
+      "/tmp",
+      "/private/tmp"
     ]
   }
 }

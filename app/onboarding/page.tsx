@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 
 import { createClient } from "@/lib/supabase/server"
-import { getOrganizationByOwner } from "@/services/organizations.service"
+import { getCurrentMembership } from "@/services/memberships.service"
 
 export default async function OnboardingIndexPage() {
   const supabase = await createClient()
@@ -18,6 +18,11 @@ export default async function OnboardingIndexPage() {
   // which. Without this check, an already-onboarded user landing here (e.g.
   // middleware bouncing them off /login) would be sent straight back into the
   // wizard instead of the post-onboarding workspace selector.
-  const org = await getOrganizationByOwner(supabase, user.id)
-  redirect(org?.status === "active" ? "/welcome" : "/onboarding/step-1")
+  //
+  // Resolved via getCurrentMembership (organization_members-based), not
+  // getOrganizationByOwner (owner_user_id-based) -- the latter returns null
+  // for every non-owner role, which would otherwise send any non-owner with
+  // an already-active organization back into the wizard too.
+  const membership = await getCurrentMembership(supabase)
+  redirect(membership?.organization.status === "active" ? "/welcome" : "/onboarding/step-1")
 }

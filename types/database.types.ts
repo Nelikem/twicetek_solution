@@ -4,6 +4,11 @@
  *
  *   supabase gen types typescript --linked > types/database.types.ts   (linked to a remote project)
  *   supabase gen types typescript --local  > types/database.types.ts  (local dev stack)
+ *
+ * NOTE: `--local` generation omits the __InternalSupabase block that `--linked`
+ * generation includes -- it must be manually spliced back in after every `--local`
+ * regeneration (see Database.__InternalSupabase below), or SupabaseClient<Database>
+ * usages break with cascading "public"|"graphql_public" type errors.
  */
 
 export type Json =
@@ -1733,4 +1738,3 @@ export const Constants = {
     },
   },
 } as const
-
