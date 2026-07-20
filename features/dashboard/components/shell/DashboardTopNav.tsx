@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -78,15 +79,17 @@ export function DashboardTopNav() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel className="flex flex-col gap-0">
-              <span className="font-medium text-foreground">{membership.fullName || "Member"}</span>
-              <span className="text-xs font-normal text-muted-foreground">{membership.roleName ?? ""}</span>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-              <LogOut />
-              Sign out
-            </DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="flex flex-col gap-0">
+                <span className="font-medium text-foreground">{membership.fullName || "Member"}</span>
+                <span className="text-xs font-normal text-muted-foreground">{membership.roleName ?? ""}</span>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

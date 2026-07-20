@@ -89,7 +89,9 @@
       "Bash(echo \"TSC_EXIT:$?\")",
       "Bash(cp /tmp/database.types.final.ts /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/types/database.types.ts)",
       "Bash(rm -f /tmp/database.types.linked.ts /tmp/database.types.final.ts /tmp/gen_linked.err)",
-      "Bash(supabase migration *)"
+      "Bash(supabase migration *)",
+      "WebFetch(domain:base-ui.com)",
+      "Bash(node scripts_verify_profile_menu.mjs)"
     ],
     "additionalDirectories": [
       "/tmp",
