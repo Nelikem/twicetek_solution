@@ -60,6 +60,42 @@ export async function listBranches(supabase: TypedClient, organizationId: string
   return data.map(toDomain)
 }
 
+export interface BranchOverviewRow {
+  branchId: string
+  name: string
+  status: "draft" | "active" | "suspended" | "archived"
+  managerName: string | null
+  businessId: string
+  businessName: string
+  createdAt: string
+  employeeCount: number
+}
+
+/** One round trip via get_branch_overview RPC. businessId, when provided, scopes
+ * results to a single business (the dashboard's drill-down entry point). */
+export async function getBranchOverview(
+  supabase: TypedClient,
+  organizationId: string,
+  businessId: string | null = null
+): Promise<BranchOverviewRow[]> {
+  const { data, error } = await supabase.rpc("get_branch_overview", {
+    org_id: organizationId,
+    business_id_filter: businessId ?? undefined,
+  })
+  if (error) throw error
+
+  return data.map((row) => ({
+    branchId: row.branch_id,
+    name: row.name,
+    status: row.status,
+    managerName: row.manager_name,
+    businessId: row.business_id,
+    businessName: row.business_name,
+    createdAt: row.created_at,
+    employeeCount: row.employee_count,
+  }))
+}
+
 /** sort_order is scoped to the business, not the org — branches only reorder
  * among their own business's siblings. name is NOT NULL with no default, so the
  * freshly-added row must set it explicitly. */

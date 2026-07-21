@@ -91,7 +91,14 @@
       "Bash(rm -f /tmp/database.types.linked.ts /tmp/database.types.final.ts /tmp/gen_linked.err)",
       "Bash(supabase migration *)",
       "WebFetch(domain:base-ui.com)",
-      "Bash(node scripts_verify_profile_menu.mjs)"
+      "Bash(node scripts_verify_profile_menu.mjs)",
+      "Bash(xargs -I{} basename {})",
+      "Bash(cp /tmp/verify_overview.mjs /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_overview.mjs)",
+      "Bash(node scripts_verify_overview.mjs)",
+      "Bash(rm /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_overview.mjs /tmp/verify_overview.mjs)",
+      "Bash(node scripts_verify_executive_dashboard.mjs)",
+      "Bash(rm /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_debug_filterbar.mjs /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_debug_filter.mjs /tmp/debug_filterbar.mjs)",
+      "Bash(supabase status *)"
     ],
     "additionalDirectories": [
       "/tmp",

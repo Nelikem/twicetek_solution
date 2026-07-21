@@ -58,6 +58,35 @@ export async function listBusinesses(supabase: TypedClient, organizationId: stri
   return data.map(toDomain)
 }
 
+export interface BusinessOverviewRow {
+  businessId: string
+  name: string
+  status: "draft" | "active" | "suspended" | "archived"
+  managerName: string | null
+  createdAt: string
+  branchCount: number
+  employeeCount: number
+}
+
+/** One round trip via get_business_overview RPC (real branch/employee counts),
+ * instead of N+1 client-side count queries. employeeCount is honestly 0 for
+ * every business today -- business_members has no invite-acceptance flow
+ * writing to it yet; the column is still real, not fabricated. */
+export async function getBusinessOverview(supabase: TypedClient, organizationId: string): Promise<BusinessOverviewRow[]> {
+  const { data, error } = await supabase.rpc("get_business_overview", { org_id: organizationId })
+  if (error) throw error
+
+  return data.map((row) => ({
+    businessId: row.business_id,
+    name: row.name,
+    status: row.status,
+    managerName: row.manager_name,
+    createdAt: row.created_at,
+    branchCount: row.branch_count,
+    employeeCount: row.employee_count,
+  }))
+}
+
 /** name is NOT NULL with no default, so the freshly-added row must set it explicitly. */
 export async function createBusiness(supabase: TypedClient, organizationId: string): Promise<Business> {
   const { data: existing, error: maxError } = await supabase

@@ -105,3 +105,45 @@ export async function countActiveMembers(supabase: TypedClient, organizationId: 
   if (error) throw error
   return count ?? 0
 }
+
+export interface MemberGrowth {
+  last30Days: number
+  prev30Days: number
+  /** 6 weekly buckets over the last 42 days, oldest first. */
+  weeklyBuckets: number[]
+}
+
+/**
+ * Computed from organization_members.created_at -- real, timestamp-backed data,
+ * unlike the financial trends the rest of the mega-spec asked for. Bucketed
+ * client-side in this function rather than via a SQL window function: row counts
+ * here are small (org membership, not transaction volume), so a single 60-day
+ * select is cheap and keeps the bucketing logic in one reviewable place.
+ */
+export async function getMemberGrowth(supabase: TypedClient, organizationId: string): Promise<MemberGrowth> {
+  const now = Date.now()
+  const cutoff60d = new Date(now - 60 * 24 * 60 * 60 * 1000).toISOString()
+
+  const { data, error } = await supabase
+    .from("organization_members")
+    .select("created_at")
+    .eq("organization_id", organizationId)
+    .eq("status", "active")
+    .gte("created_at", cutoff60d)
+
+  if (error) throw error
+
+  const timestamps = data.map((row) => new Date(row.created_at).getTime())
+  const day = 24 * 60 * 60 * 1000
+  const last30Days = timestamps.filter((t) => t >= now - 30 * day).length
+  const prev30Days = timestamps.filter((t) => t >= now - 60 * day && t < now - 30 * day).length
+
+  const weeklyBuckets: number[] = []
+  for (let week = 5; week >= 0; week--) {
+    const bucketEnd = now - week * 7 * day
+    const bucketStart = bucketEnd - 7 * day
+    weeklyBuckets.push(timestamps.filter((t) => t >= bucketStart && t < bucketEnd).length)
+  }
+
+  return { last30Days, prev30Days, weeklyBuckets }
+}

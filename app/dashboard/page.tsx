@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { cookies } from "next/headers"
 import Link from "next/link"
 import { MapPin } from "lucide-react"
@@ -8,6 +9,7 @@ import { getCurrentMembership } from "@/services/memberships.service"
 import { listBranches } from "@/services/branches.service"
 import { listBusinesses } from "@/services/businesses.service"
 import { DashboardWidgetGrid } from "@/features/dashboard/components/DashboardWidgetGrid"
+import { DashboardFilterBar } from "@/features/dashboard/components/DashboardFilterBar"
 
 function readWorkspaceCookie(raw: string | undefined): { businessId: string; branchId: string | null } | null {
   if (!raw) return null
@@ -62,7 +64,13 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <DashboardWidgetGrid />
+      {/* DashboardFilterBar and RecentActivityWidget (inside DashboardWidgetGrid) both
+          read useSearchParams -- Suspense avoids the CSR-bailout Next.js requires for
+          that hook, matching the same pattern already used in app/(auth)/login/page.tsx. */}
+      <Suspense fallback={null}>
+        <DashboardFilterBar businesses={businesses.map((b) => ({ id: b.id, name: b.name || "Untitled business" }))} />
+        <DashboardWidgetGrid />
+      </Suspense>
     </div>
   )
 }

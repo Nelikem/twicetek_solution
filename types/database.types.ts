@@ -1490,6 +1490,31 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      get_branch_overview: {
+        Args: { business_id_filter?: string; org_id: string }
+        Returns: {
+          branch_id: string
+          business_id: string
+          business_name: string
+          created_at: string
+          employee_count: number
+          manager_name: string
+          name: string
+          status: Database["public"]["Enums"]["organization_status"]
+        }[]
+      }
+      get_business_overview: {
+        Args: { org_id: string }
+        Returns: {
+          branch_count: number
+          business_id: string
+          created_at: string
+          employee_count: number
+          manager_name: string
+          name: string
+          status: Database["public"]["Enums"]["organization_status"]
+        }[]
+      }
       get_or_create_draft_organization: {
         Args: never
         Returns: {

@@ -1,25 +1,22 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
 import { Activity } from "lucide-react"
 
+import { timeAgo } from "@/lib/utils"
 import { useRecentActivityQuery } from "@/features/dashboard/hooks/useRecentActivityQuery"
 import { useMembership } from "@/features/dashboard/context/membership-context"
 import { WidgetContainer } from "@/features/dashboard/components/widgets/WidgetContainer"
 
-function timeAgo(iso: string): string {
-  const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000)
-  if (seconds < 60) return "just now"
-  const minutes = Math.floor(seconds / 60)
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
-}
-
 export function RecentActivityWidget() {
   const { organizationId } = useMembership()
-  const { data, isLoading, isError } = useRecentActivityQuery(organizationId)
+  const searchParams = useSearchParams()
+  const businessId = searchParams.get("business")
+  // 30 days matches DashboardFilterBar's default selection -- kept in sync so the
+  // widget's actual query always matches what the filter bar visually shows,
+  // even before the user has touched it (and the URL is empty).
+  const days = Number(searchParams.get("range") ?? "30")
+  const { data, isLoading, isError } = useRecentActivityQuery(organizationId, { businessId, days })
 
   return (
     <WidgetContainer
