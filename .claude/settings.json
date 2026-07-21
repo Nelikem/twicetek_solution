@@ -98,7 +98,11 @@
       "Bash(rm /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_verify_overview.mjs /tmp/verify_overview.mjs)",
       "Bash(node scripts_verify_executive_dashboard.mjs)",
       "Bash(rm /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_debug_filterbar.mjs /Users/nelikemagbanu/Desktop/Solutions/twicetek_solution/scripts_debug_filter.mjs /tmp/debug_filterbar.mjs)",
-      "Bash(supabase status *)"
+      "Bash(supabase status *)",
+      "Bash(cat)",
+      "Bash(node /tmp/contrast_check.mjs)",
+      "Bash(node /tmp/contrast_tune.mjs)",
+      "Bash(rm -f /tmp/contrast_check.mjs /tmp/contrast_tune.mjs /tmp/success_tune.mjs)"
     ],
     "additionalDirectories": [
       "/tmp",
